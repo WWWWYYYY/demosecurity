@@ -1,0 +1,23 @@
+一、环境
+1、pom中添加
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+        </dependency>
+2、application.yml
+server:
+  port: 8080
+spring:
+  thymeleaf:
+    cache: false
+
+二、配置com.example.demosecurity.config.SecurityConfiguration    security核心配置类
