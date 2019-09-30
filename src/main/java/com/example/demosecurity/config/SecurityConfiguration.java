@@ -81,5 +81,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 //                filter.setEncoding("UTF-8"); filter.setForceEncoding(true);
                 //
 //                http.addFilterBefore(filter,CsrfFilter.class);
+
+        http.headers().frameOptions().disable(); //使用 springsecurity + h2database 必须要配置csrf().disable()和 http.headers().frameOptions().disable()
     }
 }
