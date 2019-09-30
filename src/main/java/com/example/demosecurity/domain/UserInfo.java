@@ -1,6 +1,8 @@
 package com.example.demosecurity.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -12,6 +14,8 @@ import javax.persistence.*;
 @Entity
 @Table(name = "tb_user_info")
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class UserInfo {
     private static final long serialVersionUID = 1L;
@@ -32,4 +36,4 @@ public class UserInfo {
     @Column(name = "password")
     private String password;
 
-}  
+}
