@@ -70,7 +70,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()//配置权限
-                .antMatchers("/order/**").hasRole("ADMIN")
+//                .antMatchers("/order/**").hasAuthority("/order") //特殊的uri才需要在此处配置
+                .antMatchers("/order/**").hasRole("ADMIN") //特殊的uri才需要在此处配置 ROLE_ADMIN
                 .anyRequest().authenticated()//任意请求需要登录
                 .and()
                 .formLogin()//开启formLogin默认配置

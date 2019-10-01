@@ -6,13 +6,13 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.util.CollectionUtils;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 /**
  * TODO
@@ -50,8 +50,21 @@ public class UserInfo implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> authorities = new ArrayList<>();
         List<Role> roles = this.getRoles();
+        //去重
+        Set<String> authoritySet =new HashSet<>();
         for (Role role : roles) {
-            authorities.add(new SimpleGrantedAuthority(role.getRolename()));
+            if (!CollectionUtils.isEmpty(role.getPermissions())){
+                authoritySet.add("ROLE_"+role.getRolename()); //添加角色  权限 ROLE_
+                for (Permission permission : role.getPermissions()) {
+                    authoritySet.add(permission.getAuthoritie());
+                }
+
+            }
+        }
+        if (!CollectionUtils.isEmpty(authoritySet)){
+            authoritySet.stream().forEach(o->{
+                authorities.add(new SimpleGrantedAuthority(o));
+            });
         }
         return authorities;
     }
