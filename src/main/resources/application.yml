@@ -60,3 +60,7 @@ spring:
 #      ddl-auto: update
   thymeleaf:
     cache: false
+
+  devtools:
+    restart:
+      enabled: true

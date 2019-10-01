@@ -1,4 +1,4 @@
-package com.example.demosecurity.web.rest;
+package com.example.demosecurity.web;
 
 import org.springframework.security.authentication.AccountExpiredException;
 import org.springframework.security.authentication.BadCredentialsException;

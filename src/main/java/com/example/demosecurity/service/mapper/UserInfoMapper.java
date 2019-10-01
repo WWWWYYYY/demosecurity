@@ -7,12 +7,6 @@ import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring", uses = {})
 public interface UserInfoMapper extends EntityMapper<UserInfoDTO,UserInfo>{
-//    @Mappings({
-//            @Mapping(source = "userId",target = "userId")
-//    })
-
-
-
 
     default UserInfo fromId(Long id) {
         if (id == null) {

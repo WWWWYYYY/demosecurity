@@ -1,4 +1,4 @@
-package com.example.demosecurity.web.rest;
+package com.example.demosecurity.web;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;

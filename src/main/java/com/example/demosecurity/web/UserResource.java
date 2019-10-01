@@ -1,18 +1,19 @@
-package com.example.demosecurity.web.rest;
+package com.example.demosecurity.web;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
  *
  */
+@RequestMapping("/user")
 @Controller
-public class IndexResource {
+public class UserResource {
 
     @GetMapping(value = {"/index"})
     public String index(){
-        return "index";
+        return "user/index";
     }
 
 }  
