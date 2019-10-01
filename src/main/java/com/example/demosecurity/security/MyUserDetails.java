@@ -1,9 +1,9 @@
 package com.example.demosecurity.security;
 
+import com.example.demosecurity.domain.UserInfo;
+import com.example.demosecurity.service.UserInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -17,13 +17,17 @@ import org.springframework.stereotype.Component;
 public class MyUserDetails implements UserDetailsService {
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private UserInfoService userInfoService;
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        String password=passwordEncoder.encode("123456");
-        if ("123456".equals(username)){
-            throw new BadCredentialsException("密码错误");
+
+        UserInfo userinfo = userInfoService.findByUsername(username);
+        if (userinfo==null){
+            throw new BadCredentialsException("用户不存在");
         }
-        return new User(username,password,AuthorityUtils.commaSeparatedStringToAuthorityList("ADMIN"));
+        return userinfo;
     }
 }
 

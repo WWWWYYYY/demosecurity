@@ -7,4 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * TODO
  */
 public interface UserInfoRepository extends JpaRepository<UserInfo,Long> {
+    UserInfo findByUsername(String username);
 }  
