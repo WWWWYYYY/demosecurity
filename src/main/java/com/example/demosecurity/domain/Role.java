@@ -6,7 +6,7 @@ import javax.persistence.*;
 import java.util.List;
 
 /**
- * Created by linziyu on 2018/5/13
+ *
  *
  * 角色实体类
  *
@@ -14,7 +14,7 @@ import java.util.List;
 
 @Data
 @Entity
-@Table(name = "role1")
+@Table(name = "tb_role")
 public class Role {
 
     @Id

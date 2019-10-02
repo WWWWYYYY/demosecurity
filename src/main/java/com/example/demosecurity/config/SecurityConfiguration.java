@@ -1,5 +1,6 @@
 package com.example.demosecurity.config;
 
+import com.example.demosecurity.security.SuccessAuthenticationHandler;
 import com.example.demosecurity.web.errors.ErrorCode;
 import com.example.demosecurity.web.errors.MyException;
 import org.apache.commons.lang3.StringUtils;
@@ -78,23 +79,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .loginPage("/login")//请求时未登录跳转接口  spring security 提供了默认的登录页
                 .failureUrl("/login?error=true")//用户密码错误跳转接口
 //                .failureHandler(new FailureAuthenticationHandler()) //如果需要复杂的业务处理失败的情况，可配置failhandle
-                .defaultSuccessUrl("/index", true)//登录成功跳转接口
-//                .successHandler(new AuthenticationSuccessHandler() {
-//
-//                    @Override
-//                    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
-//                                                        Authentication authentication) throws IOException, ServletException {
-//                        response.setContentType("application/json;charset=utf-8");
-//
-//                        RequestCache cache = new HttpSessionRequestCache();
-//                        SavedRequest savedRequest = cache.getRequest(request, response);
-//                        String url = savedRequest.getRedirectUrl();
-//                        response.sendRedirect(url);
-//
-//
-//                    }
-//                })
-
+//                .defaultSuccessUrl("/index", true)//登录成功跳转接口
+                .successHandler(new SuccessAuthenticationHandler())
 //                .loginProcessingUrl("/login")//post登录接口，登录验证由系统实现
 //                .usernameParameter("username")    //要认证的用户参数名，自定义登录页面时参数名设置，默认username
 //                .passwordParameter("password")    //要认证的密码参数名，自定义登录页面时参数名设置默认password

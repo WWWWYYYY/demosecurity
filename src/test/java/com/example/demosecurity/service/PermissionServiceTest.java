@@ -15,8 +15,8 @@ public class PermissionServiceTest {
     @Test
     public void addPermission() {
         Permission p = new Permission();
-        p.setName("test");
-        p.setAuthoritie("/order");
+        p.setName("ROLE_ORDER");
+        p.setAuthoritie("ROLE_ORDER");
         p.setType(0);
         permissionService.addPermission(p);
 

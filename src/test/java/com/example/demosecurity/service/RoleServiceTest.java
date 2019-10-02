@@ -28,7 +28,8 @@ public class RoleServiceTest {
     public void addRole(){
         Role role =new Role();
         role.setRolename("ADMIN");
-        Permission authoritie = permissionService.findByAuthoritie("/order");
+        role.setAuthoritie("ROLE_ADMIN");
+        Permission authoritie = permissionService.findByAuthoritie("ROLE_ORDER");
         List<Permission> ps =new ArrayList<>();
         if (authoritie!=null){
             ps.add(authoritie);

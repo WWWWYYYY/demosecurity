@@ -1,31 +1,38 @@
-//package com.example.demosecurity.security;
-//
-//import com.fasterxml.jackson.databind.ObjectMapper;
-//import org.slf4j.Logger;
-//import org.slf4j.LoggerFactory;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.security.core.Authentication;
-//import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-//import org.springframework.stereotype.Component;
-//
-//import javax.servlet.ServletException;
-//import javax.servlet.http.HttpServletRequest;
-//import javax.servlet.http.HttpServletResponse;
-//import java.io.IOException;
-//
-///**
-// * TODO
-// */
-//@Component
-//public class SuccessAuthenticationHandler implements AuthenticationSuccessHandler {
-//    protected Logger logger=LoggerFactory.getLogger(getClass());
-//    @Autowired
-//    private ObjectMapper objectMapper;
-//    @Override
-//    public void onAuthenticationSuccess(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) throws IOException, ServletException {
-//        logger.info("登录成功");
-//        httpServletResponse.setContentType("application/json;charset=UTF-8");
-//        httpServletResponse.getWriter().write(objectMapper.writeValueAsString(authentication)+"/n"+"登录成功了");
-//    }
-//
-//}
+package com.example.demosecurity.security;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
+import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
+import org.springframework.security.web.savedrequest.RequestCache;
+import org.springframework.security.web.savedrequest.SavedRequest;
+import org.springframework.stereotype.Component;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
+/**
+ * TODO
+ */
+@Component
+public class SuccessAuthenticationHandler extends SavedRequestAwareAuthenticationSuccessHandler {
+    protected Logger logger=LoggerFactory.getLogger(getClass());
+
+    @Override
+    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws ServletException, IOException {
+        RequestCache requestCache = new HttpSessionRequestCache();
+        String url = null;
+        SavedRequest savedRequest = requestCache.getRequest(request,response);
+        if(savedRequest != null){
+            url = savedRequest.getRedirectUrl();
+        }
+        if(url == null){
+            getRedirectStrategy().sendRedirect(request,response,"/index");
+        }
+        super.onAuthenticationSuccess(request, response, authentication);
+    }
+
+}
