@@ -1,9 +1,12 @@
 package com.example.demosecurity.config;
 
+import com.example.demosecurity.security.FailureAuthenticationHandler;
 import com.example.demosecurity.security.SuccessAuthenticationHandler;
+import com.example.demosecurity.security.VerifyCodeFilter;
 import com.example.demosecurity.web.errors.ErrorCode;
 import com.example.demosecurity.web.errors.MyException;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -16,6 +19,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.savedrequest.RequestCache;
@@ -33,6 +37,13 @@ import java.io.IOException;
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
+
+    @Autowired
+    private FailureAuthenticationHandler failureAuthenticationHandler;
+    @Autowired
+    private VerifyCodeFilter verifyCodeFilter;
+
+    @Autowired SuccessAuthenticationHandler successAuthenticationHandler;
 //    @Override
 //    protected void configure(HttpSecurity http) throws Exception {
 //        http.authorizeRequests()
@@ -67,21 +78,24 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             }
         };
     }
+
+
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()//配置权限
 //                .antMatchers("/order/**").hasAuthority("/order") //特殊的uri才需要在此处配置
                 .antMatchers("/order/**").hasRole("ADMIN") //特殊的uri才需要在此处配置 ROLE_ADMIN
-                .antMatchers("/util/**").permitAll()
+                .antMatchers("/util/**","/favicon.ico","/login").permitAll()
                 .anyRequest().authenticated()//任意请求需要登录
                 .and()
                 .formLogin()//开启formLogin默认配置
                 .loginPage("/login")//请求时未登录跳转接口  spring security 提供了默认的登录页
                 .failureUrl("/login?error=true")//用户密码错误跳转接口
-//                .failureHandler(new FailureAuthenticationHandler()) //如果需要复杂的业务处理失败的情况，可配置failhandle
+                .failureHandler(failureAuthenticationHandler) //如果需要复杂的业务处理失败的情况，可配置failhandle
 //                .defaultSuccessUrl("/index", true)//登录成功跳转接口
-                .successHandler(new SuccessAuthenticationHandler())
+                .successHandler(successAuthenticationHandler)
 //                .loginProcessingUrl("/login")//post登录接口，登录验证由系统实现
 //                .usernameParameter("username")    //要认证的用户参数名，自定义登录页面时参数名设置，默认username
 //                .passwordParameter("password")    //要认证的密码参数名，自定义登录页面时参数名设置默认password
@@ -108,7 +122,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 //                filter.setEncoding("UTF-8"); filter.setForceEncoding(true);
                 //
 //                http.addFilterBefore(filter,CsrfFilter.class);
-
+        http.addFilterBefore(verifyCodeFilter,  UsernamePasswordAuthenticationFilter.class);
         http.headers().frameOptions().disable(); //使用 springsecurity + h2database 必须要配置csrf().disable()和 http.headers().frameOptions().disable()
     }
 }

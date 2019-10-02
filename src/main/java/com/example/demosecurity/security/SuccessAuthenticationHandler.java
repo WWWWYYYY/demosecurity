@@ -15,7 +15,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- * TODO
+ * 登录成功处理器
+ * 如果在登录之前有访问了某个资源，登录成功后就会跳转到原来的资源页面上
+ * 如果没有返回到首页
  */
 @Component
 public class SuccessAuthenticationHandler extends SavedRequestAwareAuthenticationSuccessHandler {
