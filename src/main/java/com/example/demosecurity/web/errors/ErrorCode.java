@@ -12,6 +12,7 @@ public enum ErrorCode {
     INVALID_PARAMS(7, "非法参数"),
     USER_NOT_FOUND(9, "用户并存在"),
     PASSWORD_ERROR(10, "密码错误"),
+    CREATE_VERIFY_CODE_ERROR(11, "生成验证码失败"),
     ;
 
     private ErrorCode(int code, String message) {

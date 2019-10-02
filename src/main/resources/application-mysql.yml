@@ -11,6 +11,7 @@ spring:
             prepStmtCacheSize: 250
             prepStmtCacheSqlLimit: 2048
             useServerPrepStmts: true
+        auto-commit: false
   jpa:
     database-platform: org.hibernate.dialect.MySQL57InnoDBDialect
     database: MYSQL
