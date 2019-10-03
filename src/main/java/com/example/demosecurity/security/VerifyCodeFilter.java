@@ -1,6 +1,6 @@
 package com.example.demosecurity.security;
 
-import com.example.demosecurity.utils.VerifyUtil;
+import com.example.demosecurity.common.Constants;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,7 +28,7 @@ public class VerifyCodeFilter extends OncePerRequestFilter {
             if (request.getRequestURI().contains("/login")&& request.getMethod().equals("POST")){
             try {
                 final String verifyCode =request.getParameter("verifyCode");
-                String key = (String) request.getSession().getAttribute(VerifyUtil.RANDOMCODEKEY);
+                String key = (String) request.getSession().getAttribute(Constants.RANDOMCODEKEY);
                 if (StringUtils.isEmpty(verifyCode)){
                     throw new CodeAuthenticationException("验证码不能为空");
                 }
