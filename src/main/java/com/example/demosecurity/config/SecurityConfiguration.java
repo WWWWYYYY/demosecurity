@@ -87,7 +87,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()//配置权限
 //                .antMatchers("/order/**").hasAuthority("/order") //特殊的uri才需要在此处配置
                 .antMatchers("/order/**").hasRole("ADMIN") //特殊的uri才需要在此处配置 ROLE_ADMIN
-                .antMatchers("/util/**","/favicon.ico","/login").permitAll()
+                .antMatchers("/util/**","/favicon.ico","/login","/static/**").permitAll()
                 .anyRequest().authenticated()//任意请求需要登录
                 .and()
                 .formLogin()//开启formLogin默认配置
@@ -114,7 +114,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 //单用户登录，如果有一个登录了，同一个用户在其他地方登录将前一个剔除下线
                 //http.sessionManagement().maximumSessions(1).expiredSessionStrategy(expiredSessionStrategy());
                 //单用户登录，如果有一个登录了，同一个用户在其他地方不能登录
-                http.sessionManagement().maximumSessions(99).maxSessionsPreventsLogin(true);
+                http.sessionManagement().maximumSessions(1).maxSessionsPreventsLogin(true);
                 //退出时情况cookies
                 http.logout().deleteCookies("JESSIONID");//根据实际进行定义
                 //解决中文乱码问题

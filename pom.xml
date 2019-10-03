@@ -92,6 +92,12 @@
             <artifactId>commons-lang3</artifactId>
         </dependency>
 
+
+        <!--Thymeleaf Spring Security依赖-->
+        <dependency>
+            <groupId>org.thymeleaf.extras</groupId>
+            <artifactId>thymeleaf-extras-springsecurity5</artifactId>
+        </dependency>
     </dependencies>
 
     <profiles>
