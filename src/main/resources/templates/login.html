@@ -6,26 +6,26 @@
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 </head>
 <body>
-<p th:if="${param.error}" th:text="${session?.SPRING_SECURITY_LAST_EXCEPTION?.message}" ></p>
+<p id="formtip" th:if="${param.error}" th:text="${session?.SPRING_SECURITY_LAST_EXCEPTION?.message}" ></p>
 <div align="center">
     <h2>自定义登录页面</h2>
     <form th:action="@{/login}" method="post">
         <label>
             <span>用户名：</span>
-            <input type="text" name="username">
+            <input type="text" name="username" id="username">
             <!--<input type="text" name="uname">-->
         </label>
         <br/>
         <label>
             <span>密码：</span>
-            <input type="password" name="password">
+            <input type="password" name="password" id="password">
             <!--<input type="password" name="psd">-->
         </label><br>
         <label>
             <img id="verifyCode" src="/util/createVerifyCode" onclick="localRefresh()">
-            <input type="text" placeholder="请输入验证码" name="verifyCode" required>
+            <input type="text" placeholder="请输入验证码" name="verifyCode" id="verifyCodeText" required>
         </label><br>
-        <input type="submit" class="submit input_button"  value="登录">
+        <input type="button" onclick="login()" class="submit input_button"  value="登录">
     </form>
 </div>
 
@@ -34,6 +34,50 @@
         $('#verifyCode').attr('src', '/util/createVerifyCode');
         // 装载局部刷新返回的页面
         // $('#verifyCode').load("/util/createVerifyCode?a=1");
+    }
+
+    function login(){
+        var verifyCode = $.trim($("#verifyCodeText").val());
+        var password = $.trim($("#password").val());
+        var username = $.trim($("#username").val());
+
+        //前台的非空验证
+        if(verifyCode == "" || verifyCode == null){
+            $("#verifyCodeText").focus;
+            $("#formtip").css("color","red");
+            $("#formtip").html("对不起，登录账号不能为空。");
+        }else if(password == "" || password == null){
+            $("#password").focus;
+            $("#formtip").css("color","red");
+            $("#formtip").html("对不起，登录密码不能为空。");
+        }else{
+            $("#formtip").html("");
+            //如果账号和密码都不为空，就进行 ajax 异步提交
+            $.ajax({
+                type:'POST',  //提交方法是POST
+                url:'/login', //请求的路径
+                data:{
+                    verifyCode:verifyCode,
+                    username:username,
+                    password:password
+                }, //以JSON字符串形式把 user 传到后台
+                dataType:'json', //后台返回的数据类型是html文本
+                timeout:10000,  //请求超时时间，毫秒
+                error:function(data){  //请求失败的回调方法
+                    alert(data.responseJSON.msg)
+                },
+                success:function(data){   //请求成功的回调方法
+                    console.log(data)
+                    //如果url不为空 则返回原页面，为空则返回首页
+                    if (data.url!=undefined && data.url!='') {
+                        window.location.href=data.url;
+                    }else {
+                        window.location.href='/index';
+                    }
+
+                }
+            });
+        }
     }
 </script>
 

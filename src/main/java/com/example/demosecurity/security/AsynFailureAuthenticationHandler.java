@@ -11,18 +11,25 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
  */
-//@Component
-public class FailureAuthenticationHandler extends SimpleUrlAuthenticationFailureHandler {
+@Component
+public class AsynFailureAuthenticationHandler extends FailureAuthenticationHandler {
     protected Logger logger=LoggerFactory.getLogger(getClass());
     private ObjectMapper objectMapper =new ObjectMapper();
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
         logger.info("登录失败");
-        response.sendRedirect("/login?error=true");
+        Map data =new HashMap();
+        data.put("success",false);
+        data.put("msg", exception.getMessage());
+        String string = objectMapper.writeValueAsString(data);
+        response.setContentType("text/json;charset=utf-8");
+        response.getWriter().write(string);
     }
 }
