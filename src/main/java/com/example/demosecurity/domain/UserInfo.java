@@ -54,7 +54,8 @@ public class UserInfo implements UserDetails {
         Set<String> authoritySet =new HashSet<>();
         for (Role role : roles) {
             if (!CollectionUtils.isEmpty(role.getPermissions())){
-                authoritySet.add("ROLE_"+role.getRolename()); //添加角色  权限 ROLE_
+                //添加角色  权限 ROLE_
+                authoritySet.add("ROLE_"+role.getRolename());
                 for (Permission permission : role.getPermissions()) {
                     authoritySet.add(permission.getAuthoritie());
                 }

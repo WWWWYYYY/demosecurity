@@ -5,10 +5,16 @@
     <title>enjoy</title>
 </head>
 <body>
+当前用户为：
+<p  th:text="${username}" ></p>
+
 welcome2 index
 <br>
 <a th:href='@{/order/indexPage}'>
     订单页面
+</a><br>
+<a th:href='@{/user/index}'>
+    用户页面
 </a><br>
 </body>
 </html>
