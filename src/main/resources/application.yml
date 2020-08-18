@@ -1,5 +1,9 @@
 server:
   port: 8080
+  servlet:
+    session:
+      cookie:
+        name: JESSIONID
 spring:
 #  security:
 #    user:

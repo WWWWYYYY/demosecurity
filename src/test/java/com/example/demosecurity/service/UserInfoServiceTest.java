@@ -34,7 +34,7 @@ public class UserInfoServiceTest {
     public void addUserInfo(){
         UserInfo userInfo =new UserInfo();
         userInfo.setUsername("admin");
-            String password=passwordEncoder.encode("123456");
+        String password=passwordEncoder.encode("123456");
         userInfo.setPassword(password);
         List<Role> roleList =new ArrayList<>();
         roleList.add(roleService.findByRoleName("ADMIN"));

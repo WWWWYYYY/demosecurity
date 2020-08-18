@@ -1,16 +1,4 @@
-server:
-  port: 8080
 spring:
-#  security:
-#    user:
-#      name: admin
-#      password: admin
-  h2:
-    console:
-        enabled: true
-        path: /h2-console
-        settings:
-          web-allow-others: true
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
     url: jdbc:mysql://10.0.26.187:13306/springboot?useUnicode=true&characterEncoding=utf8&useSSL=false
@@ -23,6 +11,7 @@ spring:
             prepStmtCacheSize: 250
             prepStmtCacheSqlLimit: 2048
             useServerPrepStmts: true
+        auto-commit: false
   jpa:
     database-platform: org.hibernate.dialect.MySQL57InnoDBDialect
     database: MYSQL
@@ -34,10 +23,3 @@ spring:
         hibernate.generate_statistics: true
     hibernate:
       ddl-auto: update
-
-  thymeleaf:
-    cache: false
-
-  devtools:
-    restart:
-      enabled: true

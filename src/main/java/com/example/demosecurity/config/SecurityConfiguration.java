@@ -87,12 +87,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()//配置权限
 //                .antMatchers("/order/**").hasAuthority("/order") //特殊的uri才需要在此处配置
                 .antMatchers("/order/**").hasRole("ADMIN") //特殊的uri才需要在此处配置 ROLE_ADMIN
-                .antMatchers("/util/**","/favicon.ico","/login","/static/**").permitAll()
+                .antMatchers("/util/**","/favicon.ico","/login","/js/**","/css/**").permitAll()
                 .anyRequest().authenticated()//任意请求需要登录
                 .and()
                 .formLogin()//开启formLogin默认配置
                 .loginPage("/login")//请求时未登录跳转接口  spring security 提供了默认的登录页
-                .failureUrl("/login?error=true")//用户密码错误跳转接口
+//                .failureUrl("/login?error=true")//用户密码错误跳转接口
                 .failureHandler(failureAuthenticationHandler) //如果需要复杂的业务处理失败的情况，可配置failhandle
 //                .defaultSuccessUrl("/index", true)//登录成功跳转接口
                 .successHandler(successAuthenticationHandler)
