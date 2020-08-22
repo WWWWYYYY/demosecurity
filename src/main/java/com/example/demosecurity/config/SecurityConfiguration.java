@@ -1,12 +1,14 @@
 package com.example.demosecurity.config;
 
 import com.example.demosecurity.security.FailureAuthenticationHandler;
+import com.example.demosecurity.security.MyUserDetails;
 import com.example.demosecurity.security.SuccessAuthenticationHandler;
 import com.example.demosecurity.security.VerifyCodeFilter;
 import com.example.demosecurity.web.errors.ErrorCode;
 import com.example.demosecurity.web.errors.MyException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -16,10 +18,14 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.jdbc.JdbcDaoImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.rememberme.*;
 import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.savedrequest.RequestCache;
@@ -30,7 +36,10 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.sql.DataSource;
 import java.io.IOException;
+
+import static org.springframework.security.config.Elements.REMEMBER_ME;
 
 
 @Configuration
@@ -80,18 +89,38 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
 
 
+    @Qualifier("dataSource")
+    @Autowired
+    private DataSource dataSource ;
+
+    @Autowired
+    private UserDetailsService userService;
+    @Bean
+    public RememberMeServices rememberMeServices(){
+        InMemoryTokenRepositoryImpl tokenRepository = new InMemoryTokenRepositoryImpl();
+        PersistentTokenBasedRememberMeServices rememberMeServices =
+                new PersistentTokenBasedRememberMeServices(REMEMBER_ME,userService,tokenRepository);
+        //客户端cookie名
+        rememberMeServices.setCookieName(REMEMBER_ME);
+        rememberMeServices.setTokenValiditySeconds(10);
+        return rememberMeServices;
+    }
+
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()//配置权限
 //                .antMatchers("/order/**").hasAuthority("/order") //特殊的uri才需要在此处配置
-                .antMatchers("/order/**").hasRole("ADMIN") //特殊的uri才需要在此处配置 ROLE_ADMIN
+                //特殊的uri才需要在此处配置 ROLE_ADMIN
+                .antMatchers("/order/**").hasRole("ADMIN")
                 .antMatchers("/util/**","/favicon.ico","/login","/js/**","/css/**").permitAll()
                 .anyRequest().authenticated()//任意请求需要登录
                 .and()
-                .formLogin()//开启formLogin默认配置
-                .loginPage("/login")//请求时未登录跳转接口  spring security 提供了默认的登录页
+                //开启formLogin默认配置
+                .formLogin()
+                //请求时未登录跳转接口  spring security 提供了默认的登录页
+                .loginPage("/login")
 //                .failureUrl("/login?error=true")//用户密码错误跳转接口
                 .failureHandler(failureAuthenticationHandler) //如果需要复杂的业务处理失败的情况，可配置failhandle
 //                .defaultSuccessUrl("/index", true)//登录成功跳转接口
@@ -100,6 +129,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 //                .usernameParameter("username")    //要认证的用户参数名，自定义登录页面时参数名设置，默认username
 //                .passwordParameter("password")    //要认证的密码参数名，自定义登录页面时参数名设置默认password
                 .permitAll()
+                .and()
+                //开启记住我的拦截器
+                .rememberMe()
+                .rememberMeServices(rememberMeServices())
                 .and()
                 .logout()//配置注销
                 .logoutUrl("/logout")//注销接口
@@ -122,7 +155,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 //                filter.setEncoding("UTF-8"); filter.setForceEncoding(true);
                 //
 //                http.addFilterBefore(filter,CsrfFilter.class);
-        http.addFilterBefore(verifyCodeFilter,  UsernamePasswordAuthenticationFilter.class);
+//        http.addFilterBefore(verifyCodeFilter,  UsernamePasswordAuthenticationFilter.class);
         http.headers().frameOptions().disable(); //使用 springsecurity + h2database 必须要配置csrf().disable()和 http.headers().frameOptions().disable()
     }
 }
